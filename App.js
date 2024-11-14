@@ -34,6 +34,15 @@ function TabNavigator({navigation, route}) {
         }}
       />
       
+      <Tab.Screen
+        name="Friends"
+        initialParams={{ userData }}
+        component={FriendsScreen}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Feather name="users" size={24} color={color} />,
+        }}
+      />
     </Tab.Navigator>
   );
 }
@@ -60,7 +69,12 @@ export default function App() {
             options={{
               headerShown: false}}
           />
-        
+        <Stack.Screen 
+            name='Following' 
+            component={Following}
+            options={{
+              headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
