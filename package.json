@@ -32,13 +32,7 @@
     "react-native-pager-view": "6.4.1",
     "react-native-tab-view": "3.5.2",
     "react-native-vector-icons": "10.2.0",
-<<<<<<< HEAD
     "react-native-web": "~0.19.13"
-=======
-    "react-native-web": "~0.19.13",
-    "expo-video": "~2.0.0",
-    "expo-image-picker": "16.0.1"
->>>>>>> 85d4252 (new post success)
   },
   "devDependencies": {
     "@babel/core": "^7.25.2"
