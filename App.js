@@ -75,6 +75,42 @@ export default function App() {
             options={{
               headerShown: false}}
         />
+        <Stack.Screen 
+            name='ProfileDetails' 
+            component={profileDetails}
+            options={{
+              headerShown: false}}
+        />
+        <Stack.Screen 
+            name='Post' 
+            component={post}
+            options={{
+              headerShown: false}}
+        />
+        <Stack.Screen 
+            name='PostStory' 
+            component={postStory}
+            options={{
+              headerShown: false}}
+        />
+        <Stack.Screen 
+            name='CreateStory' 
+            component={createStory}
+            options={{
+              headerShown: false}}
+        />
+        <Stack.Screen 
+            name='VideoDetails' 
+            component={videoDetails}
+            options={{
+              headerShown: false}}
+        />
+        <Stack.Screen 
+            name='StoryDetails' 
+            component={StoryDetails}
+            options={{
+              headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
