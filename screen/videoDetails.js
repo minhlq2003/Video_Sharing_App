@@ -99,7 +99,7 @@ export default function VideoStreaming({ navigation, route }) {
           <Icon2
             style={styles.iconRight}
             name="heart-o"
-            size={30}
+            size={25}
             color={likedPosts[item.idPost] ? 'red' : 'white'}
           />
         </TouchableOpacity>
