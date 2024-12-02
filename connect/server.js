@@ -216,6 +216,46 @@ app.get('/comment', async (req, res) => {
       WHERE p.idPost = ?
       ORDER BY p.idPost DESC`, [id]);
     res.json(rows);
+  } catch (err) {
+    console.log('Error fetching comments:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+app.get('/commentCount', async (req, res) => {
+  const id = parseInt(req.query.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).send('Invalid id parameter');
+  }
+
+  try {
+    const [rows] = await req.app.locals.db.execute(`
+      SELECT COUNT(*) AS comment_count FROM Comment WHERE idPost = ?`, [id]);
+    res.json(rows);
+  } catch (err) {
+    console.log('Error fetching comment count:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+app.get('/likeCount', async (req, res) => {
+  const id = parseInt(req.query.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).send('Invalid id parameter');
+  }
+
+  try {
+    const [rows] = await req.app.locals.db.execute(`
+      SELECT COUNT(*) AS like_count FROM \`Like\` WHERE idPost = ?`, [id]);
+    res.json(rows);
+  } catch (err) {
+    console.log('Error fetching like count:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+app.post('/savePost', async (req, res) => {
+  const { idUser, type, url, content } = req.body;
   if (!idUser || !type || !url || !content) {
     return res.status(400).json({ error: 'Vui lòng cung cấp idUser, type, url và content.' });
   }
