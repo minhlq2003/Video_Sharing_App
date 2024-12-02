@@ -158,7 +158,6 @@ app.get('/videoStreaming', async (req, res) => {
 
 app.get('/imageStreaming4', async (req, res) => {
   try {
-<<<<<<< HEAD
     const [rows] = await req.app.locals.db.execute(`
       SELECT * FROM Post p 
       INNER JOIN Users u ON p.idUser = u.idUser
@@ -167,17 +166,6 @@ app.get('/imageStreaming4', async (req, res) => {
       LIMIT 4;
     `);
     res.json(rows);
-=======
-    const pool = req.app.locals.db;
-    const result = await pool.request()
-      .input('id', mssql.Int, id)
-      .query(`
-        select p.url from Post p inner join Users u
-        on p.idUser = u.idUser where p.type= 'video' and p.idUser = @id
-        ORDER BY p.idPost DESC;
-      `);
-    res.json(result.recordset);
->>>>>>> 85d4252 (new post success)
   } catch (err) {
     console.log('Error fetching image details:', err);
     res.status(500).send('Server Error');
@@ -220,7 +208,6 @@ app.get('/comment', async (req, res) => {
   }
 
   try {
-<<<<<<< HEAD
     const [rows] = await req.app.locals.db.execute(`
       SELECT c.text, c.time, u.avatar, u.username
       FROM Comment c
@@ -229,26 +216,12 @@ app.get('/comment', async (req, res) => {
       WHERE p.idPost = ?
       ORDER BY p.idPost DESC`, [id]);
     res.json(rows);
-=======
-    const pool = req.app.locals.db;
-    const result = await pool.request()
-      .input('id', mssql.Int, parsedId)
-      .query(`
-        select c.text, c.time, u.avatar, u.username from Comment c
-        inner join Post p on c.idPost = p.idPost 
-        inner join Users u on u.idUser = c.idUser
-        where c.idPost = @id
-      `);
-
-    res.json(result.recordset);
->>>>>>> 85d4252 (new post success)
   } catch (err) {
     console.log('Error fetching comments:', err);
     res.status(500).send('Server Error');
   }
 });
 
-<<<<<<< HEAD
 app.get('/commentCount', async (req, res) => {
   const id = parseInt(req.query.id, 10);
   if (isNaN(id)) {
@@ -292,38 +265,11 @@ app.post('/savePost', async (req, res) => {
       INSERT INTO Post (idUser, type, url, content, upload_at)
       VALUES (?, ?, ?, ?, NOW())`, [idUser, type, url, content]);
     res.status(201).json({ message: 'Bài viết đã được lưu thành công!', insertId: result.insertId });
-=======
-// Endpoint để lưu bài viết mới
-app.post('/savePost', async (req, res) => {
-  const { idUser, type, url, content } = req.body;
-  const count_like = 0;
-  const count_comment = 0;
-  if (!idUser || !type || !url || !content) {
-    return res.status(400).json({ error: 'Vui lòng cung cấp idUser, type, url và content.' });
-  }
-
-  try {
-    const pool = req.app.locals.db;
-    const result = await pool.request()
-      .input('idUser', mssql.Int, idUser)
-      .input('type', mssql.NVarChar, type)
-      .input('url', mssql.NVarChar, url)
-      .input('content', mssql.NVarChar, content)
-      .input('count_like', mssql.Int, count_like)
-      .input('count_comment', mssql.Int, count_comment)
-      .query(`
-        INSERT INTO dbo.Post (idUser, type, url, content, upload_at, count_like, count_comment)
-        VALUES (@idUser, @type, @url, @content, GETDATE(), @count_like, @count_comment)
-      `);
-
-    res.status(201).json({ message: 'Bài viết đã được lưu thành công!' });
->>>>>>> 85d4252 (new post success)
   } catch (error) {
     console.error("Lỗi cơ sở dữ liệu:", error);
     res.status(500).json({ error: 'Lỗi khi lưu bài viết vào cơ sở dữ liệu.' });
   }
 });
-<<<<<<< HEAD
 
 app.put('/updateProfile', async (req, res) => {
   const { idUser, username, avatar, sdt, email, birthDay } = req.body;
@@ -573,8 +519,6 @@ app.get('/suggest', async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
-=======
->>>>>>> 85d4252 (new post success)
 
 // Khởi chạy server
 app.listen(3000, () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -14,6 +14,10 @@ const EditProfile = ({ navigation, route }) => {
   const initialBirthday = user.birthDay ? new Date(user.birthDay) : new Date();
   const [birthday, setBirthday] = useState(initialBirthday);
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [user]); // The dependency array ensures that this runs only when `user` changes
 
   const onChange = (event, selectedDate) => {
     setShow(false);
@@ -43,18 +47,34 @@ const EditProfile = ({ navigation, route }) => {
 
   const updatePost = async (idUser, username, avatar, sdt, email, birthDay) => {
     try {
-      const response = await axios.put('http://192.168.1.5:3000/updateProfile', {
+      // Format birthDay to 'YYYY-MM-DD' in local time
+      const formatBirthDay = (birthDay) => {
+        // Create a new Date object from the input string
+        const date = new Date(birthDay);
+  
+        // Adjust the date based on the local timezone offset (in minutes)
+        const localOffset = date.getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+        const localDate = new Date(date.getTime() - localOffset);
+  
+        // Return the date as 'YYYY-MM-DD'
+        return localDate.toISOString().split('T')[0];
+      };
+    
+      const formattedBirthDay = formatBirthDay(birthDay);
+    
+      // Send the API request with the formatted birthDay
+      const response = await axios.put('http://192.168.1.4:3000/updateProfile', {
         idUser,
         username,
         avatar,
         sdt,
         email,
-        birthDay,
+        birthDay: formattedBirthDay, // Use the formatted birthDay
       });
-  
+    
       if (response.status === 200) {
         Alert.alert("Thành công", "Cập nhật thông tin thành công!");
-        navigation.navigate('Login')
+        fetchUserData(); // Fetch the updated user data after the update
       } else {
         Alert.alert("Lỗi", "Đã xảy ra lỗi khi cập nhật thông tin!");
       }
@@ -64,11 +84,33 @@ const EditProfile = ({ navigation, route }) => {
     }
   };
   
+  
+  const fetchUserData = async () => {
+    try {
+      // Fetch the updated user data from the server
+      const response = await axios.get(`http://192.168.1.4:3000/data?id=${user.idUser}`);
+      if (response.status === 200) {
+        // If the request is successful, update the user data in the state
+        const updatedUser = response.data[0];
+        setUsername(updatedUser.username);
+        setPhone(updatedUser.sdt);
+        setAvatar(updatedUser.avatar);
+        setEmail(updatedUser.email);
+        setBirthday(new Date(updatedUser.birthDay)); // Assuming birthDay is in the format you want
+        console.log("Dữ liệu người dùng đã được cập nhật:", updatedUser);
+      } else {
+        Alert.alert("Lỗi", "Không thể lấy dữ liệu người dùng!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu người dùng:", error);
+      Alert.alert("Lỗi", "Không thể kết nối tới máy chủ.");
+    }
+  };
 
   const update = () => {
     updatePost(user.idUser, username, avatar, phone, email, birthday);
-  }
-  
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.avatarContainer}>
